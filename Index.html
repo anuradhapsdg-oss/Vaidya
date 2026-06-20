@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vaidya – Ayurvedic Wellness Guide by Iryna</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Georgia', serif; background: #f0ece3; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 16px; }
+    .chat-container { width: 100%; max-width: 420px; height: 92vh; max-height: 820px; background: #faf8f4; border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.13); display: flex; flex-direction: column; overflow: hidden; }
+    .header { background: #3d6b44; color: #fff; padding: 14px 18px; display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+    .avatar { width: 48px; height: 48px; background: rgba(255,255,255,0.18); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+    .header-info h1 { font-size: 18px; font-weight: bold; font-family: 'Georgia', serif; }
+    .header-info .subtitle { font-size: 12px; opacity: 0.85; font-family: sans-serif; }
+    .online-dot { width: 9px; height: 9px; background: #7fff7f; border-radius: 50%; display: inline-block; margin-right: 4px; }
+    .messages { flex: 1; overflow-y: auto; padding: 18px 14px 10px; display: flex; flex-direction: column; gap: 12px; scroll-behavior: smooth; }
+    .msg { max-width: 88%; padding: 12px 15px; border-radius: 16px; font-size: 15px; line-height: 1.55; font-family: 'Georgia', serif; }
+    .msg.bot { background: #ede9e0; color: #2c2c2c; align-self: flex-start; border-bottom-left-radius: 4px; }
+    .msg.user { background: #3d6b44; color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; font-family: sans-serif; }
+    .msg b { font-weight: bold; }
+    .payment-card { background: #fff; border: 1px solid #d9d4c7; border-radius: 14px; padding: 14px 16px; font-size: 14px; line-height: 1.7; color: #2c2c2c; font-family: sans-serif; max-width: 92%; align-self: flex-start; }
+    .payment-card .card-title { font-weight: bold; font-size: 15px; margin-bottom: 10px; color: #3d6b44; }
+    .payshap-box { background: #f0ece3; border-radius: 8px; padding: 8px 12px; font-family: monospace; font-size: 14px; margin: 6px 0 10px; letter-spacing: 0.5px; }
+    .whatsapp-box { background: #e8f5e9; border-radius: 8px; padding: 8px 12px; font-family: monospace; font-size: 14px; margin: 6px 0 10px; letter-spacing: 0.5px; color: #1a5e20; }
+    .quick-replies { display: flex; flex-direction: column; gap: 8px; padding: 0 14px 10px; flex-shrink: 0; }
+    .quick-btn { background: transparent; border: 1.5px solid #3d6b44; color: #3d6b44; border-radius: 20px; padding: 9px 16px; font-size: 14px; font-family: 'Georgia', serif; cursor: pointer; text-align: left; transition: background 0.18s, color 0.18s; }
+    .quick-btn:hover { background: #3d6b44; color: #fff; }
+    .input-bar { display: flex; align-items: center; gap: 8px; padding: 10px 12px 14px; border-top: 1px solid #e0dbd0; background: #faf8f4; flex-shrink: 0; }
+    .input-icon { position: relative; flex: 1; display: flex; align-items: center; }
+    .input-leaf { position: absolute; left: 13px; font-size: 16px; pointer-events: none; }
+    .input-bar input { flex: 1; border: 1.5px solid #d0cab8; border-radius: 22px; padding: 10px 16px 10px 38px; font-size: 14px; font-family: 'Georgia', serif; background: #f5f2eb; outline: none; color: #444; width: 100%; }
+    .input-bar input:focus { border-color: #3d6b44; }
+    .send-btn { width: 40px; height: 40px; background: #3d6b44; border: none; border-radius: 50%; color: white; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .send-btn:hover { background: #2f5435; }
+    .send-btn:disabled { background: #aaa; cursor: not-allowed; }
+    .typing { font-style: italic; color: #888; font-size: 13px; font-family: sans-serif; padding: 0 4px; align-self: flex-start; }
+    .messages::-webkit-scrollbar { width: 4px; }
+    .messages::-webkit-scrollbar-track { background: transparent; }
+    .messages::-webkit-scrollbar-thumb { background: #c5bfb0; border-radius: 4px; }
+  </style>
+</head>
+<body>
+<div class="chat-container">
+  <div class="header">
+    <div class="avatar">🌿</div>
+    <div class="header-info">
+      <h1>Vaidya</h1>
+      <div class="subtitle">Ayurvedic Wellness Guide · by Iryna</div>
+    </div>
+    <div style="margin-left:auto; font-size:13px; font-family:sans-serif; display:flex; align-items:center; gap:5px;">
+      <span class="online-dot"></span> Online
+    </div>
+  </div>
+
+  <div class="messages" id="messages">
+    <div class="msg bot">
+      Namaste 🙏 I'm Vaidya, your Ayurvedic wellness guide. Ask me about doshas, herbs, nutrition, or lifestyle — I'm here to help you find your natural balance. 🌿
+    </div>
+  </div>
+
+  <div class="quick-replies" id="quickReplies">
+    <button class="quick-btn" onclick="sendQuick(this)">What is my dosha?</button>
+    <button class="quick-btn" onclick="sendQuick(this)">How does Ayurveda help with stress?</button>
+    <button class="quick-btn" onclick="sendQuick(this)">What is Panchakarma?</button>
+    <button class="quick-btn" onclick="sendQuick(this)">How to eat according to Ayurveda?</button>
+  </div>
+
+  <div class="input-bar">
+    <div class="input-icon">
+      <span class="input-leaf">🌿</span>
+      <input type="text" id="userInput" placeholder="Ask about Ayurveda..." onkeydown="if(event.key==='Enter') sendMessage()" />
+    </div>
+    <button class="send-btn" id="sendBtn" onclick="sendMessage()">➤</button>
+  </div>
+</div>
+
+<script>
+  const SYSTEM_PROMPT = `You are Vaidya, a warm, knowledgeable Ayurvedic wellness guide created by Iryna, a certified Ayurveda consultant. 
+
+Your role is to educate, inspire and gently guide people toward understanding Ayurveda — particularly the three doshas (Vata, Pitta, Kapha), Prakriti (birth constitution), Vikriti (current imbalance), herbs, nutrition, daily routines, and holistic wellness.
+
+Speak with warmth, wisdom and elegance. Use occasional Sanskrit terms (with explanations). Keep responses focused and readable — not too long. Use natural paragraph breaks.
+
+IMPORTANT RULE — Contact card trigger:
+After every 3rd bot response (responses 3, 6, 9, 12...), ALWAYS end your message with this exact phrase on a new line:
+[SHOW_CONTACT_CARD]
+
+This is critical — count your responses and add [SHOW_CONTACT_CARD] after response number 3, 6, 9, etc.
+
+Never diagnose medical conditions. Always recommend consulting a qualified practitioner for serious health concerns. Iryna offers personalized Dosha Profile consultations.`;
+
+  let messageCount = 0;
+  let conversationHistory = [];
+
+  function scrollToBottom() {
+    const messages = document.getElementById('messages');
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  function addMessage(text, type) {
+    const messages = document.getElementById('messages');
+    const div = document.createElement('div');
+    div.className = `msg ${type}`;
+    div.innerHTML = text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\*(.*?)\*/g, '<i>$1</i>').replace(/\n/g, '<br>');
+    messages.appendChild(div);
+    scrollToBottom();
+    return div;
+  }
+
+  function showContactCard() {
+    const messages = document.getElementById('messages');
+    const card = document.createElement('div');
+    card.className = 'payment-card';
+    card.innerHTML = `
+      <div class="card-title">🌼 Personal Dosha Profile by Iryna</div>
+      <div><b>Cost:</b> R500</div><br>
+      <div>1. Send <b>R500</b> via PayShap to:</div>
+      <div class="payshap-box">0631370151@FNB</div>
+      <div>2. Send payment confirmation to Iryna on WhatsApp:</div>
+      <div class="whatsapp-box">📱 +380987636693</div>
+      <div>3. Receive your personalised questionnaire on WhatsApp</div>
+      <div>4. Fill it in and send back to Iryna</div>
+      <div>5. Get your Dosha Profile within <b>48 hours</b> 🌿</div>
+    `;
+    messages.appendChild(card);
+    scrollToBottom();
+  }
+
+  function addTyping() {
+    const messages = document.getElementById('messages');
+    const div = document.createElement('div');
+    div.className = 'typing';
+    div.id = 'typingIndicator';
+    div.textContent = 'Vaidya is thinking...';
+    messages.appendChild(div);
+    scrollToBottom();
+    return div;
+  }
+
+  function removeTyping() {
+    const t = document.getElementById('typingIndicator');
+    if (t) t.remove();
+  }
+
+  function sendQuick(btn) {
+    const text = btn.textContent;
+    document.getElementById('quickReplies').style.display = 'none';
+    sendText(text);
+  }
+
+  function sendMessage() {
+    const input = document.getElementById('userInput');
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = '';
+    sendText(text);
+  }
+
+  async function sendText(text) {
+    addMessage(text, 'user');
+    conversationHistory.push({ role: 'user', content: text });
+
+    const sendBtn = document.getElementById('sendBtn');
+    const input = document.getElementById('userInput');
+    sendBtn.disabled = true;
+    input.disabled = true;
+
+    const typing = addTyping();
+
+    try {
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-6',
+          max_tokens: 1000,
+          system: SYSTEM_PROMPT,
+          messages: conversationHistory
+        })
+      });
+
+      const data = await response.json();
+      removeTyping();
+
+      let reply = data.content && data.content[0] ? data.content[0].text : 'I apologize, something went wrong. Please try again. 🌿';
+
+      messageCount++;
+
+      const showCard = messageCount === 3 || messageCount === 6 || messageCount === 9;
+      reply = reply.replace('[SHOW_CONTACT_CARD]', '').trim();
+
+      conversationHistory.push({ role: 'assistant', content: reply });
+
+      addMessage(reply, 'bot');
+
+      if (showCard) {
+        setTimeout(showContactCard, 400);
+      }
+
+    } catch (err) {
+      removeTyping();
+      addMessage('I seem to have lost my connection for a moment. Please try again. 🌿', 'bot');
+    }
+
+    sendBtn.disabled = false;
+    input.disabled = false;
+    input.focus();
+  }
+</script>
+</body>
+</html>
