@@ -7,7 +7,12 @@ export default async function handler(req, res) {
         "anthropic-version": "2023-06-01",
         "content-type": "application/json"
       },
-      body: JSON.stringify(req.body)
+      body: JSON.stringify({
+  model: req.body.model,
+  max_tokens: req.body.max_tokens,
+  system: req.body.system,
+  messages: req.body.messages
+})
     });
 
     const data = await response.json();
