@@ -75,20 +75,6 @@
 </div>
 
 <script>
-  const SYSTEM_PROMPT = `You are Vaidya, a warm, knowledgeable Ayurvedic wellness guide created by Iryna, a certified Ayurveda consultant. 
-
-Your role is to educate, inspire and gently guide people toward understanding Ayurveda — particularly the three doshas (Vata, Pitta, Kapha), Prakriti (birth constitution), Vikriti (current imbalance), herbs, nutrition, daily routines, and holistic wellness.
-
-Speak with warmth, wisdom and elegance. Use occasional Sanskrit terms (with explanations). Keep responses focused and readable — not too long. Use natural paragraph breaks.
-
-IMPORTANT RULE — Contact card trigger:
-After every 3rd bot response (responses 3, 6, 9, 12...), ALWAYS end your message with this exact phrase on a new line:
-[SHOW_CONTACT_CARD]
-
-This is critical — count your responses and add [SHOW_CONTACT_CARD] after response number 3, 6, 9, etc.
-
-Never diagnose medical conditions. Always recommend consulting a qualified practitioner for serious health concerns. Iryna offers personalized Dosha Profile consultations.`;
-
   let messageCount = 0;
   let conversationHistory = [];
 
@@ -134,7 +120,6 @@ Never diagnose medical conditions. Always recommend consulting a qualified pract
     div.textContent = 'Vaidya is thinking...';
     messages.appendChild(div);
     scrollToBottom();
-    return div;
   }
 
   function removeTyping() {
@@ -143,9 +128,8 @@ Never diagnose medical conditions. Always recommend consulting a qualified pract
   }
 
   function sendQuick(btn) {
-    const text = btn.textContent;
     document.getElementById('quickReplies').style.display = 'none';
-    sendText(text);
+    sendText(btn.textContent);
   }
 
   function sendMessage() {
@@ -164,39 +148,25 @@ Never diagnose medical conditions. Always recommend consulting a qualified pract
     const input = document.getElementById('userInput');
     sendBtn.disabled = true;
     input.disabled = true;
-
-    const typing = addTyping();
+    addTyping();
 
     try {
       const response = await fetch('/api/chat', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-api-key': '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', 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-6',
-          max_tokens: 1000,
-          system: SYSTEM_PROMPT,
-          messages: conversationHistory
-        })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: conversationHistory })
       });
-
 
       const data = await response.json();
       removeTyping();
 
-      let reply = data.content && data.content[0] ? data.content[0].text : 'I apologize, something went wrong. Please try again. 🌿';
-
+      let reply = data.content?.[0]?.text || 'I apologize, something went wrong. Please try again. 🌿';
       messageCount++;
-
-      const showCard = messageCount === 3 || messageCount === 6 || messageCount === 9;
       reply = reply.replace('[SHOW_CONTACT_CARD]', '').trim();
-
       conversationHistory.push({ role: 'assistant', content: reply });
-
       addMessage(reply, 'bot');
 
-      if (showCard) {
-        setTimeout(showContactCard, 400);
-      }
+      if (messageCount % 3 === 0) setTimeout(showContactCard, 400);
 
     } catch (err) {
       removeTyping();
@@ -209,4 +179,4 @@ Never diagnose medical conditions. Always recommend consulting a qualified pract
   }
 </script>
 </body>
-</html>      
+</html>
