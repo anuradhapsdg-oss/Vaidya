@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ayurvedic Dosha Questionnaire · Vaidya</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #F2EFE9;
+    font-family: 'Jost', sans-serif;
+    font-weight: 300;
+    color: #3a3530;
+    min-height: 100vh;
+  }.header {
+    background: #3d4f2e;
+    padding: 48px 24px 40px;
+    text-align: center;
+    color: #F2EFE9;
+  }
+  .header-eyebrow {
+    font-family: 'Jost', sans-serif;
+    font-weight: 400;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #c9b97a;
+    margin-bottom: 16px;
+  }
+  .header h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 44px;
+    line-height: 1.1;
+    color: #F2EFE9;
+  }
+  .header h1 em {
+    font-style: italic;
+    color: #c9b97a;
+  }
+  .header-sub {
+    font-size: 14px;
+    color: #c5bfb0;
+    margin-top: 10px;
+    letter-spacing: 0.5px;
+  }.progress-bar-wrap {
+    background: #3d4f2e;
+    padding: 0 24px 20px;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #8fa86e;
+    margin-bottom: 8px;
+  }
+  .progress-track {
+    background: #2e3d21;
+    border-radius: 2px;
+    height: 3px;
+    width: 100%;
+  }
+  .progress-fill {
+    background: #c9b97a;
+    height: 3px;
+    border-radius: 2px;
+    width: 0%;
+    transition: width 0.4s ease;
+  }
+  .intro {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 32px 24px 8px;
+    text-align: center;
+  }
+  .intro p {
+    font-size: 14px;
+    line-height: 1.8;
+    color: #6b6258;
+  }
+  .dosha-pills {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+  .pill { padding: 6px 18px; border-radius: 30px; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; border: 1px solid; }
+  .pill.vata { color: #7b9bbd; border-color: #7b9bbd; }
+  .pill.pitta { color: #c07a5a; border-color: #c07a5a; }
+  .pill.kapha { color: #5a8a6a; border-color: #5a8a6a; }.form-wrap { max-width: 640px; margin: 0 auto; padding: 16px 16px 40px; }
+  .section-card { background: #fff; border-radius: 12px; padding: 28px 24px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .section-header { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #ede9e1; }
+  .section-num { width: 32px; height: 32px; border-radius: 50%; background: #3d4f2e; color: #c9b97a; font-family: 'Cormorant Garamond', serif; font-size: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .section-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 400; color: #3a3530; }
+  .section-eyebrow { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #c9b97a; margin-bottom: 20px; }
+  .field-group { margin-bottom: 18px; }
+  .field-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #8a8078; margin-bottom: 6px; display: block; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  input[type="text"], input[type="number"], select, textarea { width: 100%; padding: 12px 14px; border: 1px solid #ddd8cf; border-radius: 8px; font-family: 'Jost', sans-serif; font-size: 14px; color: #3a3530; background: #fafaf8; outline: none; transition: border-color 0.2s; }
+  input:focus, select:focus, textarea:focus { border-color: #3d4f2e; }
+  textarea { resize: vertical; min-height: 100px; }
+  .question { margin-bottom: 22px; }
+  .question-label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: #8a8078; margin-bottom: 10px; }
+  .choice-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .choice-btn { border: 1px solid #ddd8cf; border-radius: 8px; padding: 10px 6px; text-align: center; cursor: pointer; background: #fafaf8; transition: all 0.2s; -webkit-tap-highlight-color: transparent; }
+  .choice-btn .dosha-tag { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px; font-weight: 500; }
+  .choice-btn .dosha-text { font-size: 12px; color: #3a3530; line-height: 1.3; }
+  .choice-btn.vata-btn .dosha-tag { color: #7b9bbd; }
+  .choice-btn.pitta-btn .dosha-tag { color: #c07a5a; }
+  .choice-btn.kapha-btn .dosha-tag { color: #5a8a6a; }
+  .choice-btn.selected.vata-sel { background: #edf3f9; border-color: #7b9bbd; }
+  .choice-btn.selected.pitta-sel { background: #faf2ee; border-color: #c07a5a; }
+  .choice-btn.selected.kapha-sel { background: #eef4f0; border-color: #5a8a6a; }
+  .tag-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .tag-chip { padding: 7px 14px; border: 1px solid #ddd8cf; border-radius: 20px; font-size: 12px; color: #3a3530; cursor: pointer; background: #fafaf8; transition: all 0.2s; -webkit-tap-highlight-color: transparent; }
+  .tag-chip.selected { background: #3d4f2e; border-color: #3d4f2e; color: #F2EFE9; }
+  .activity-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .activity-btn { padding: 10px; border: 1px solid #ddd8cf; border-radius: 8px; text-align: center; font-size: 13px; cursor: pointer; background: #fafaf8; transition: all 0.2s; -webkit-tap-highlight-color: transparent; }
+  .activity-btn.selected { background: #3d4f2e; border-color: #3d4f2e; color: #F2EFE9; }
+  .submit-section { background: #3d4f2e; border-radius: 12px; padding: 36px 28px; text-align: center; margin-bottom: 16px; }
+  .submit-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; color: #F2EFE9; margin-bottom: 8px; }
+  .submit-sub { font-size: 13px; color: #a8b898; margin-bottom: 28px; line-height: 1.6; }
+  .submit-btn { background: #c9b97a; color: #2a2218; border: none; border-radius: 8px; padding: 16px 32px; font-family: 'Jost', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 3px; text-transform: uppercase; cursor: pointer; width: 100%; transition: background 0.2s; }
+  .submit-btn:hover { background: #b8a568; }
+  .submit-note { font-size: 11px; color: #7a8f6a; margin-top: 14px; }
+  .divider { height: 1px; background: #ede9e1; margin: 20px 0; }
+</style>
+</head><body>
+<div class="header">
+  <div class="header-eyebrow">Ayurveda · Since Antiquity</div>
+  <h1>Your Ayurvedic<br><em>Dosha Profile</em></h1>
+  <div class="header-sub">Ancient wisdom for a balanced modern life</div>
+</div>
+<div class="progress-bar-wrap">
+  <div class="progress-label">
+    <span>Progress</span>
+    <span id="progress-text">0 / 24</span>
+  </div>
+  <div class="progress-track">
+    <div class="progress-fill" id="progress-fill"></div>
+  </div>
+</div>
+<div class="intro">
+  <p>Choose one answer per question that best describes you as you naturally are — not as you would like to be. Three options correspond to:</p>
+  <div class="dosha-pills">
+    <span class="pill vata">Vata · Air</span>
+    <span class="pill pitta">Pitta · Fire</span>
+    <span class="pill kapha">Kapha · Earth</span>
+  </div>
+</div>
+<div class="form-wrap">
+<div class="section-card">
+  <div class="section-eyebrow">Your Details</div>
+  <div class="section-header">
+    <div class="section-num">1</div>
+    <div class="section-title">General Information</div>
+  </div>
+  <div class="field-group">
+    <label class="field-label">Full Name</label>
+    <input type="text" id="name" placeholder="Your name">
+  </div>
+  <div class="field-row">
+    <div class="field-group">
+      <label class="field-label">Age</label>
+      <input type="number" id="age" placeholder="Age">
+    </div>
+    <div class="field-group">
+      <label class="field-label">Gender</label>
+      <select id="gender">
+        <option value="">Select</option>
+        <option>Female</option>
+        <option>Male</option>
+        <option>Other</option>
+      </select>
+    </div>
+  </div>
+  <div class="field-row">
+    <div class="field-group">
+      <label class="field-label">Height (cm)</label>
+      <input type="number" id="height" placeholder="cm">
+    </div>
+    <div class="field-group">
+      <label class="field-label">Weight (kg)</label>
+      <input type="number" id="weight" placeholder="kg">
+    </div>
+  </div>
+  <div class="field-group">
+    <label class="field-label">Occupation</label>
+    <input type="text" id="occupation" placeholder="Your occupation">
+  </div>
+  <div class="field-group">
+    <label class="field-label">Physical Activity Level</label>
+    <div class="activity-grid">
+      <div class="activity-btn" onclick="selectActivity(this,'Low')">Low</div>
+      <div class="activity-btn" onclick="selectActivity(this,'Moderate')">Moderate</div>
+      <div class="activity-btn" onclick="selectActivity(this,'High')">High</div>
+    </div>
+  </div>
+</div><div class="section-card">
+  <div class="section-header">
+    <div class="section-num">2</div>
+    <div class="section-title">Body Type</div>
+  </div>
+  <div class="question">
+    <div class="question-label">A) Build</div>
+    <div class="choice-grid">
+      <div class="choice-btn vata-btn" onclick="selectChoice(this,'build','Vata - Slim & lean')"><div class="dosha-tag">Vata</div><div class="dosha-text">Slim & lean</div></div>
+      <div class="choice-btn pitta-btn" onclick="selectChoice(this,'build','Pitta - Medium build')"><div class="dosha-tag">Pitta</div><div class="dosha-text">Medium build</div></div>
+      <div class="choice-btn kapha-btn" onclick="selectChoice(this,'build','Kapha - Large & solid')"><div class="dosha-tag">Kapha</div><div class="dosha-text">Large & solid</div></div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="question">
+    <div class="question-label">B) Weight</div>
+    <div class="choice-grid">
+      <div class="choice-btn vata-btn" onclick="selectChoice(this,'weight_q','Vata - Fluctuates easily')"><div class="dosha-tag">Vata</div><div class="dosha-text">Fluctuates easily</div></div>
+      <div class="choice-btn pitta-btn" onclick="selectChoice(this,'weight_q','Pitta - Stays stable')"><div class="dosha-tag">Pitta</div><div class="dosha-text">Stays stable</div></div>
+      <div class="choice-btn kapha-btn" onclick="selectChoice(this,'weight_q','Kapha - Gain easily, hard to lose')"><div class="dosha-tag">Kapha</div><div class="dosha-text">Gain easily, hard to lose</div></div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="question">
+    <div class="question-label">C) Bone Structure</div>
+    <div class="choice-grid">
+      <div class="choice-btn vata-btn" onclick="selectChoice(this,'bones','Vata - Fine & delicate')"><div class="dosha-tag">Vata</div><div class="dosha-text">Fine & delicate</div></div>
+      <div class="choice-btn pitta-btn" onclick="selectChoice(this,'bones','Pitta - Medium bones')"><div class="dosha-tag">Pitta</div><div class="dosha-text">Medium bones</div></div>
+      <div class="choice-btn kapha-btn" onclick="selectChoice(this,'bones','Kapha - Large & broad')"><div class="dosha-tag">Kapha</div><div class="dosha-text">Large & broad</div></div>
+    </div>
+  </div>
+</div>
+<div class="section-card">
+  <div class="section-header">
+    <div class="section-num">3</div>
+    <div class="section-title">Skin & Hair</div>
+  </div>
+  <div class="question">
+    <div class="question-label">A) Skin Type</div>
+    <div class="choice-grid">
+      <div class="choice-btn vata-btn" onclick="selectChoice(this,'skin','Vata - Dry & rough')"><div class="dosha-tag">Vata</div><div class="dosha-text">Dry & rough</div></div>
+      <div class="choice-btn pitta-btn" onclick="selectChoice(this,'skin','Pitta - Sensitive & reactive')"><div class="dosha-tag">Pitta</div><div class="dosha-text">Sensitive & reactive</div></div>
+      <div class="choice-btn kapha-btn" onclick="selectChoice(this,'skin','Kapha - Soft & oily')"><div class="dosha-tag">Kapha</div><div class="dosha-text">Soft & oily</div></div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="question">
+    <div class="question-label">B) Hair</div>
+    <div class="choice-grid">
+      <div class="choice-btn vata-btn" onclick="selectChoice(this,'hair','Vata - Dry & frizzy')"><div class="dosha-tag">Vata</div><div class="dosha-text">Dry & frizzy</div></div>
+      <div class="choice-btn pitta-btn" onclick="selectChoice(this,'hair','Pitta - Soft & fine')"><div class="dosha-tag">Pitta</div><div class="dosha-text">Soft & fine</div></div>
+      <div class="choice-btn kapha-btn" onclick="selectChoice(this,'hair','Kapha - Thick & lustrous')"><div class="dosha-tag">Kapha</div><div class="dosha-text">Thick & lustrous</div></div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="question">
+    <div class="question-label">C) Predominant Sensation</div>
+    <div class="choice-grid">
+      <div class="choice-btn vata-btn" onclick="selectChoice(this,'sensation','Vata - Dryness')"><div class="dosha-tag">Vata</div><div class="dosha-text">Dryness</div></div>
+      <div class="choice-btn pitta-btn" onclick="selectChoice(this,'sensation','Pitta - Heat & warmth')"><div class="dosha-tag">Pitta</div><div class="dosha-text">Heat & warmth</div></div>
+      <div class="choice-btn kapha-btn" onclick="selectChoice(this,'sensation','Kapha - Heaviness')"><div class="dosha-tag">Kapha</div><div class="dosha-text">Heaviness</div></div>
+    </div>
+  </div>
+</div><div class="section-card">
+  <div class="section-header">
+    <div class="section-num">4</div>
+    <div class="section-title">Digestion</div>
+  </div>
+  <div class="question">
+    <div class="question-label">A) Appetite</div>
+    <div class="choice-grid">
+      <div class="choice-btn vata-btn" onclick="selectChoice(this,'appetite','Vata - Irregular & variable')"><div class="dosha-tag">Vata</div><div class="dosha-text">Irregular & variable</div></div>
+      <div class="choice-btn pitta-btn" onclick="selectChoice(this,'appetite','Pitta - Strong & intense')"><div class="dosha-tag">Pitta</div><div class="dosha-text">Strong & intense</div></div>
+      <div class="choice-btn kapha-btn" onclick="selectChoice(this,'appetite','Kapha - Steady & consistent')"><div class="dosha-tag">Kapha</div><div class="dosha-text">Steady & consistent</div></div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="question">
+    <div class="question-label">B) Metabolism</div>
+    <div class="choice-grid">
+      <div class="choice-btn vata-btn" onclick="selectChoice(this,'metabolism','Vata - Variable')"><div class="dosha-tag">Vata</div><div class="dosha-text">Variable</div></div>
+      <div class="choice-btn pitta-btn" onclick="selectChoice(this,'metabolism','Pitta - Fast & efficient')"><div class="dosha-tag">Pitta</div><div class="dosha-text">Fast & efficient</div></div>
+      <div class="choice-btn kapha-btn" onclick="selectChoice(this,'metabolism','Kapha - Slow & steady')"><div class="dosha-tag">Kapha</div><div class="dosha-text">Slow & steady</div></div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="question">
+    <div class="question-label">C) After Meals</div>
+    <div class="choice-grid">
+      <div class="choice-btn vata-btn" onclick="selectChoice(this,'after_meals','Vata - Bloating & gas')"><div class="dosha-tag">Vata</div><div class="dosha-text">Bloating & gas</div></div>
+      <div class="choice-btn pitta-btn" onclick="selectChoice(this,'after_meals','Pitta - Heartburn & heat')"><div class="dosha-tag">Pitta</div><div class="dosha-text">Heartburn & heat</div></div>
+      <div class="choice-btn kapha-btn" onclick="selectChoice(this,'after_meals','Kapha - Heaviness & drowsiness')"><div class="dosha-tag">Kapha</div><div class="dosha-text">Heaviness & drowsiness</div></div>
+    </div>
+  </div>
+</div>
+<div class="section-card">
+  <div class="section-header">
+    <div class="section-num">5</div>
+    <div class="section-title">Energy & Sleep</div>
+  </div>
+  <div class="question">
+    <div class="question-label">A) Energy Pattern</div>
+    <div class="choice-grid">
+      <div class="choice-btn vata-btn" onclick="selectChoice(this,'energy','Vata - Comes in bursts')"><div class="dosha-tag">Vata</div><div class="dosha-text">Comes in bursts</div></div>
+      <div class="choice-btn pitta-btn" onclick="selectChoice(this,'energy','Pitta - High & intense')"><div class="dosha-tag">Pitta</div><div class="dosha-text">High & intense</div></div>
+      <div class="choice-btn kapha-btn" onclick="selectChoice(this,'energy','Kapha - Calm & enduring')"><div class="dosha-tag">Kapha</div><div class="dosha-text">Calm & enduring</div></div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="question">
+    <div class="question-label">B) Sleep Quality</div>
+    <div class="choice-grid">
+      <div class="choice-btn vata-btn" onclick="selectChoice(this,'sleep','Vata - Light & interrupted')"><div class="dosha-tag">Vata</div><div class="dosha-text">Light & interrupted</div></div>
+      <div class="choice-btn pitta-btn" onclick="selectChoice(this,'sleep','Pitta - Moderate')"><div class="dosha-tag">Pitta</div><div class="dosha-text">Moderate</div></div>
+      <div class="choice-btn kapha-btn" onclick="selectChoice(this,'sleep','Kapha - Deep & long')"><div class="dosha-tag">Kapha</div><div class="dosha-text">Deep & long</div></div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="question">
+    <div class="question-label">C) Hours of Sleep</div>
+    <div class="choice-grid">
+      <div class="choice-btn vata-btn" onclick="selectChoice(this,'sleep_hours','Vata - 5-7 hours')"><div class="dosha-tag">Vata</div><div class="dosha-text">5–7 hours</div></div>
+      <div class="choice-btn pitta-btn" onclick="selectChoice(this,'sleep_hours','Pitta - 7-8 hours')"><div class="dosha-tag">Pitta</div><div class="dosha-text">7–8 hours</div></div>
+      <div class="choice-btn kapha-btn" onclick="selectChoice(this,'sleep_hours','Kapha - 8+ hours')"><div class="dosha-tag">Kapha</div><div class="dosha-text">8+ hours</div></div>
+    </div>
+  </div>
+</div><div class="section-card">
+  <div class="section-header">
+    <div class="section-num">6</div>
+    <div class="section-title">Emotions & Mind</div>
+  </div>
+  <div class="question">
+    <div class="question-label">A) Under Stress I Feel</div>
+    <div class="choice-grid">
+      <div class="choice-btn vata-btn" onclick="selectChoice(this,'stress','Vata - Anxious & worried')"><div class="dosha-tag">Vata</div><div class="dosha-text">Anxious & worried</div></div>
+      <div class="choice-btn pitta-btn" onclick="selectChoice(this,'stress','Pitta - Irritable & angry')"><div class="dosha-tag">Pitta</div><div class="dosha-text">Irritable & angry</div></div>
+      <div class="choice-btn kapha-btn" onclick="selectChoice(this,'stress','Kapha - Withdrawn & passive')"><div class="dosha-tag">Kapha</div><div class="dosha-text">Withdrawn & passive</div></div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="question">
+    <div class="question-label">B) My Mind Is</div>
+    <div class="choice-grid">
+      <div class="choice-btn vata-btn" onclick="selectChoice(this,'mind','Vata - Quick & restless')"><div class="dosha-tag">Vata</div><div class="dosha-text">Quick & restless</div></div>
+      <div class="choice-btn pitta-btn" onclick="selectChoice(this,'mind','Pitta - Sharp & logical')"><div class="dosha-tag">Pitta</div><div class="dosha-text">Sharp & logical</div></div>
+      <div class="choice-btn kapha-btn" onclick="selectChoice(this,'mind','Kapha - Calm & steady')"><div class="dosha-tag">Kapha</div><div class="dosha-text">Calm & steady</div></div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="question">
+    <div class="question-label">C) I Am Better At</div>
+    <div class="choice-grid">
+      <div class="choice-btn vata-btn" onclick="selectChoice(this,'better_at','Vata - Starting new things')"><div class="dosha-tag">Vata</div><div class="dosha-text">Starting new things</div></div>
+      <div class="choice-btn pitta-btn" onclick="selectChoice(this,'better_at','Pitta - Organising & planning')"><div class="dosha-tag">Pitta</div><div class="dosha-text">Organising & planning</div></div>
+      <div class="choice-btn kapha-btn" onclick="selectChoice(this,'better_at','Kapha - Completing & following through')"><div class="dosha-tag">Kapha</div><div class="dosha-text">Completing & following through</div></div>
+    </div>
+  </div>
+</div>
+<div class="section-card">
+  <div class="section-header">
+    <div class="section-num">7</div>
+    <div class="section-title">Lifestyle</div>
+  </div>
+  <div class="question">
+    <div class="question-label">A) I Am Drawn To</div>
+    <div class="choice-grid">
+      <div class="choice-btn vata-btn" onclick="selectChoice(this,'drawn_to','Vata - Change & novelty')"><div class="dosha-tag">Vata</div><div class="dosha-text">Change & novelty</div></div>
+      <div class="choice-btn pitta-btn" onclick="selectChoice(this,'drawn_to','Pitta - Goals & achievement')"><div class="dosha-tag">Pitta</div><div class="dosha-text">Goals & achievement</div></div>
+      <div class="choice-btn kapha-btn" onclick="selectChoice(this,'drawn_to','Kapha - Comfort & routine')"><div class="dosha-tag">Kapha</div><div class="dosha-text">Comfort & routine</div></div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="question">
+    <div class="question-label">B) My Speech</div>
+    <div class="choice-grid">
+      <div class="choice-btn vata-btn" onclick="selectChoice(this,'speech','Vata - Fast & talkative')"><div class="dosha-tag">Vata</div><div class="dosha-text">Fast & talkative</div></div>
+      <div class="choice-btn pitta-btn" onclick="selectChoice(this,'speech','Pitta - Clear & precise')"><div class="dosha-tag">Pitta</div><div class="dosha-text">Clear & precise</div></div>
+      <div class="choice-btn kapha-btn" onclick="selectChoice(this,'speech','Kapha - Slow & considered')"><div class="dosha-tag">Kapha</div><div class="dosha-text">Slow & considered</div></div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="question">
+    <div class="question-label">C) I Make Decisions</div>
+    <div class="choice-grid">
+      <div class="choice-btn vata-btn" onclick="selectChoice(this,'decisions','Vata - Quickly & impulsively')"><div class="dosha-tag">Vata</div><div class="dosha-text">Quickly & impulsively</div></div>
+      <div class="choice-btn pitta-btn" onclick="selectChoice(this,'decisions','Pitta - Confidently & decisively')"><div class="dosha-tag">Pitta</div><div class="dosha-text">Confidently & decisively</div></div>
+      <div class="choice-btn kapha-btn" onclick="selectChoice(this,'decisions','Kapha - Slowly & thoughtfully')"><div class="dosha-tag">Kapha</div><div class="dosha-text">Slowly & thoughtfully</div></div>
+    </div>
+  </div>
+</div><div class="section-card">
+  <div class="section-header">
+    <div class="section-num">8</div>
+    <div class="section-title">Additional Indicators</div>
+  </div>
+  <div class="question">
+    <div class="question-label">A) My Typical Imbalance</div>
+    <div class="choice-grid">
+      <div class="choice-btn vata-btn" onclick="selectChoice(this,'imbalance','Vata - Anxiety & worry')"><div class="dosha-tag">Vata</div><div class="dosha-text">Anxiety & worry</div></div>
+      <div class="choice-btn pitta-btn" onclick="selectChoice(this,'imbalance','Pitta - Irritability & frustration')"><div class="dosha-tag">Pitta</div><div class="dosha-text">Irritability & frustration</div></div>
+      <div class="choice-btn kapha-btn" onclick="selectChoice(this,'imbalance','Kapha - Apathy & lethargy')"><div class="dosha-tag">Kapha</div><div class="dosha-text">Apathy & lethargy</div></div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="question">
+    <div class="question-label">B) I Prefer Climate</div>
+    <div class="choice-grid">
+      <div class="choice-btn vata-btn" onclick="selectChoice(this,'climate','Vata - Warm & humid')"><div class="dosha-tag">Vata</div><div class="dosha-text">Warm & humid</div></div>
+      <div class="choice-btn pitta-btn" onclick="selectChoice(this,'climate','Pitta - Cool & fresh')"><div class="dosha-tag">Pitta</div><div class="dosha-text">Cool & fresh</div></div>
+      <div class="choice-btn kapha-btn" onclick="selectChoice(this,'climate','Kapha - Dry & warm')"><div class="dosha-tag">Kapha</div><div class="dosha-text">Dry & warm</div></div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="question">
+    <div class="question-label">C) I Restore Myself With</div>
+    <div class="choice-grid">
+      <div class="choice-btn vata-btn" onclick="selectChoice(this,'restore','Vata - Warmth & rest')"><div class="dosha-tag">Vata</div><div class="dosha-text">Warmth & rest</div></div>
+      <div class="choice-btn pitta-btn" onclick="selectChoice(this,'restore','Pitta - Coolness & calm')"><div class="dosha-tag">Pitta</div><div class="dosha-text">Coolness & calm</div></div>
+      <div class="choice-btn kapha-btn" onclick="selectChoice(this,'restore','Kapha - Movement & stimulation')"><div class="dosha-tag">Kapha</div><div class="dosha-text">Movement & stimulation</div></div>
+    </div>
+  </div>
+</div>
+<div class="section-card">
+  <div class="section-header">
+    <div class="section-num">9</div>
+    <div class="section-title">A Few Words About You</div>
+  </div>
+  <p style="font-size:13px;color:#6b6258;line-height:1.8;margin-bottom:20px;font-style:italic;">This space is entirely yours. Share whatever feels relevant — your current state of mind, a health concern, a question, or simply how you are feeling right now.</p>
+  <div class="question">
+    <div class="question-label">A) How Are You Feeling Lately?</div>
+    <div class="tag-grid" id="feeling-grid">
+      <div class="tag-chip" onclick="toggleTag(this,'feeling')">Energised</div>
+      <div class="tag-chip" onclick="toggleTag(this,'feeling')">Tired</div>
+      <div class="tag-chip" onclick="toggleTag(this,'feeling')">Anxious</div>
+      <div class="tag-chip" onclick="toggleTag(this,'feeling')">At peace</div>
+      <div class="tag-chip" onclick="toggleTag(this,'feeling')">Scattered</div>
+      <div class="tag-chip" onclick="toggleTag(this,'feeling')">Motivated</div>
+      <div class="tag-chip" onclick="toggleTag(this,'feeling')">Overwhelmed</div>
+      <div class="tag-chip" onclick="toggleTag(this,'feeling')">Balanced</div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="question">
+    <div class="question-label">B) My Main Intention for This Consultation</div>
+    <div class="tag-grid" id="intention-grid">
+      <div class="tag-chip" onclick="toggleTag(this,'intention')">Improve digestion</div>
+      <div class="tag-chip" onclick="toggleTag(this,'intention')">Better sleep</div>
+      <div class="tag-chip" onclick="toggleTag(this,'intention')">Manage stress</div>
+      <div class="tag-chip" onclick="toggleTag(this,'intention')">Understand my nature</div>
+      <div class="tag-chip" onclick="toggleTag(this,'intention')">More energy</div>
+      <div class="tag-chip" onclick="toggleTag(this,'intention')">Emotional balance</div>
+      <div class="tag-chip" onclick="toggleTag(this,'intention')">Weight balance</div>
+      <div class="tag-chip" onclick="toggleTag(this,'intention')">General wellbeing</div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <div class="field-group">
+    <label class="field-label">C) Anything Else You'd Like to Share (Optional)</label>
+    <textarea id="notes" placeholder="A health concern, a question, something you've been noticing about yourself..."></textarea>
+  </div>
+</div><div class="submit-section">
+  <div class="submit-title">Ready to Discover Your Dosha?</div>
+  <div class="submit-sub">Your answers will be sent directly to Iryna via WhatsApp</div>
+  <button class="submit-btn" onclick="sendToWhatsApp()">SEND MY QUESTIONNAIRE</button>
+  <div class="submit-note">Opens WhatsApp with your completed answers · +380987636693</div>
+</div>
+</div>
+<script>
+  const answers = {};
+  const activitySelected = { value: '' };
+  const TOTAL = 24;
+
+  function updateProgress() {
+    const filled = Object.keys(answers).length;
+    const pct = Math.round((filled / TOTAL) * 100);
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('progress-text').textContent = filled + ' / ' + TOTAL;
+  }
+
+  function selectChoice(el, key, value) {
+    const grid = el.parentElement;
+    grid.querySelectorAll('.choice-btn').forEach(b => {
+      b.classList.remove('selected','vata-sel','pitta-sel','kapha-sel');
+    });
+    el.classList.add('selected');
+    if (el.classList.contains('vata-btn')) el.classList.add('vata-sel');
+    if (el.classList.contains('pitta-btn')) el.classList.add('pitta-sel');
+    if (el.classList.contains('kapha-btn')) el.classList.add('kapha-sel');
+    answers[key] = value;
+    updateProgress();
+  }
+
+  function selectActivity(el, value) {
+    document.querySelectorAll('.activity-btn').forEach(b => b.classList.remove('selected'));
+    el.classList.add('selected');
+    activitySelected.value = value;
+  }
+
+  function toggleTag(el, group) {
+    el.classList.toggle('selected');
+  }
+
+  function sendToWhatsApp() {
+    const name = document.getElementById('name').value || 'Not provided';
+    const age = document.getElementById('age').value || 'Not provided';
+    const gender = document.getElementById('gender').value || 'Not provided';
+    const height = document.getElementById('height').value || 'Not provided';
+    const weight = document.getElementById('weight').value || 'Not provided';
+    const occupation = document.getElementById('occupation').value || 'Not provided';
+    const activity = activitySelected.value || 'Not selected';
+    const notes = document.getElementById('notes').value || 'None';
+    const feelings = [...document.querySelectorAll('#feeling-grid .tag-chip.selected')].map(t => t.textContent).join(', ') || 'Not selected';
+    const intentions = [...document.querySelectorAll('#intention-grid .tag-chip.selected')].map(t => t.textContent).join(', ') || 'Not selected';
+
+    let msg = '🌿 AYURVEDIC DOSHA QUESTIONNAIRE\n';
+    msg += '━━━━━━━━━━━━━━━━━━━━\n\n';
+    msg += '👤 GENERAL INFORMATION\n';
+    msg += 'Name: ' + name + '\n';
+    msg += 'Age: ' + age + ' | Gender: ' + gender + '\n';
+    msg += 'Height: ' + height + ' cm | Weight: ' + weight + ' kg\n';
+    msg += 'Occupation: ' + occupation + '\n';
+    msg += 'Activity Level: ' + activity + '\n\n';
+
+    const sections = [
+      ['🔹 BODY TYPE', ['build','weight_q','bones']],
+      ['🔹 SKIN & HAIR', ['skin','hair','sensation']],
+      ['🔹 DIGESTION', ['appetite','metabolism','after_meals']],
+      ['🔹 ENERGY & SLEEP', ['energy','sleep','sleep_hours']],
+      ['🔹 EMOTIONS & MIND', ['stress','mind','better_at']],
+      ['🔹 LIFESTYLE', ['drawn_to','speech','decisions']],
+      ['🔹 ADDITIONAL INDICATORS', ['imbalance','climate','restore']],
+    ];
+
+    const labels = {
+      build:'Build', weight_q:'Weight', bones:'Bone Structure',
+      skin:'Skin Type', hair:'Hair', sensation:'Predominant Sensation',
+      appetite:'Appetite', metabolism:'Metabolism', after_meals:'After Meals',
+      energy:'Energy Pattern', sleep:'Sleep Quality', sleep_hours:'Hours of Sleep',
+      stress:'Under Stress', mind:'My Mind', better_at:'Better At',
+      drawn_to:'Drawn To', speech:'Speech', decisions:'Decisions',
+      imbalance:'Typical Imbalance', climate:'Preferred Climate', restore:'I Restore With',
+    };
+
+    sections.forEach(function(s) {
+      msg += s[0] + '\n';
+      s[1].forEach(function(k) {
+        msg += labels[k] + ': ' + (answers[k] || 'Not answered') + '\n';
+      });
+      msg += '\n';
+    });
+
+    msg += '🔹 ABOUT YOU\n';
+    msg += 'Feeling lately: ' + feelings + '\n';
+    msg += 'Intention: ' + intentions + '\n';
+    msg += 'Additional notes: ' + notes + '\n';
+    msg += '━━━━━━━━━━━━━━━━━━━━';
+
+    window.open('https://wa.me/380987636693?text=' + encodeURIComponent(msg), '_blank');
+  }
+
+  updateProgress();
+</script>
+</body>
+</html>
