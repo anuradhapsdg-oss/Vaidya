@@ -19,7 +19,7 @@ RULES:
     const orRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${key}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'mistralai/mistral-7b-instruct:free'
+      body: JSON.stringify({ model: 'meta-llama/llama-3.3-70b:free'
         messages: [{ role: 'system', content: SYSTEM }, ...recent] })
     });
     const data = await orRes.json();
