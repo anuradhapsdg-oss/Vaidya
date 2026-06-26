@@ -4,7 +4,7 @@ export default async function handler(req, res) {
 
   try {
     const { messages } = req.body;
-    const key = process.env.OPENROUTER_API_KEY;
+    const key = process.env.GEMINI_API_KEY;
     const recent = messages.slice(-6);
     const orRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
