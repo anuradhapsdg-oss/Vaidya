@@ -1,20 +1,10 @@
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
-  const SYSTEM = `You are Vaidya, a warm and knowledgeable Ayurvedic wellness guide created by Iryna. 
-
-RULES:
-- Give short, warm, friendly answers (3-5 sentences max)
-- Never use markdown, bullet points, dashes, or asterisks
-- Never draw lines or dividers
-- Speak naturally like a caring wellness consultant
-- Help with questions about doshas, Ayurvedic lifestyle, herbs, nutrition, digestion, sleep, stress
-- Never diagnose medical conditions
-- Every 3rd response, add exactly this at the end: [SHOW_CONTACT_CARD]
-- Do not mention the contact card in your text, just add the tag silently`;
+  const SYSTEM = `You are Vaidya, a warm Ayurvedic wellness guide created by Iryna. Answer in 2-3 short sentences only. NEVER use dashes, asterisks, bullet points or draw lines. NEVER offer dosha profile yourself. Help with doshas, herbs, nutrition, sleep, stress. Never diagnose. Every 3rd response add silently at the end: [SHOW_CONTACT_CARD]`;
 
   try {
     const { messages } = req.body;
-    const key = process.env.GEMINI_API_KEY;
+    const key = process.env.OPENROUTER_API_KEY;
     const recent = messages.slice(-6);
     const orRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
