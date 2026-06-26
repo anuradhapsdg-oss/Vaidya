@@ -8,7 +8,7 @@ export default async function handler(req, res) {
     const orRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${key}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'openai/gpt-5.4-nano:free', messages: [{ role: 'system', content: SYSTEM }, ...recent] })
+      body: JSON.stringify({ model: 'openrouter/auto', messages: [{ role: 'system', content: SYSTEM }, ...recent] })
     });
     const data = await orRes.json();
     const text = data?.choices?.[0]?.message?.content;
